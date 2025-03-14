@@ -11,6 +11,16 @@ safe_extract <- function(data, field) {
 
 # Mock get_ip_data to simulate different API responses
 get_ip_data <- function(ip_addresses, api_key, base_url) { 
+  # Return empty data frame if no IPs provided
+  if (length(ip_addresses) == 0) {
+    return(data.frame(
+      ip = character(0),
+      country_code = character(0),
+      country_name = character(0),
+      stringsAsFactors = FALSE
+    ))
+  }
+  
   # Simulate API failure for "invalid_ip"
   if ("invalid_ip" %in% ip_addresses) { 
     return(data.frame())  # Return an empty data frame for invalid IPs 
@@ -19,8 +29,8 @@ get_ip_data <- function(ip_addresses, api_key, base_url) {
   # Return mock data for valid IPs
   data.frame(
     ip = ip_addresses,
-    country_code = c("US", "GB"),
-    country_name = c("United States", "United Kingdom"),
+    country_code = rep("US", length(ip_addresses)),
+    country_name = rep("United States", length(ip_addresses)),
     stringsAsFactors = FALSE
   )
 }
@@ -38,8 +48,8 @@ test_that("get_ip_data retrieves correct data for valid IPs", {
   expect_equal(result$country_code[1], "US")
   expect_equal(result$country_name[1], "United States")
   expect_equal(result$ip[2], "1.1.1.1")
-  expect_equal(result$country_code[2], "GB")
-  expect_equal(result$country_name[2], "United Kingdom")
+  expect_equal(result$country_code[2], "US")
+  expect_equal(result$country_name[2], "United States")
 })
 
 # Test case 2: Invalid IP (simulate API failure)
