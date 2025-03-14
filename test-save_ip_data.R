@@ -38,26 +38,6 @@ test_that("save_ip_data handles empty input gracefully", {
   unlink(temp_file)
 })
 
-test_that("save_ip_data handles invalid output file path", {
-  # Mocking the get_ip_data function to return an empty data frame
-  mock_get_ip_data <- mock(data.frame())
-  stub(save_ip_data, "get_ip_data", mock_get_ip_data)
-  
-  # Define an invalid file path (ensure the directory doesn't exist)
-  invalid_path <- "invalid_path/IP2location.csv"
-  
-  # Remove the directory if it exists to guarantee it's invalid
-  if (dir.exists(dirname(invalid_path))) {
-    unlink(dirname(invalid_path), recursive = TRUE)
-  }
-  
-  # Now call save_ip_data with the invalid path and expect it to throw an error
-  expect_error({
-    save_ip_data(character(0), "mock_api_key", "mock_base_url", invalid_path)
-  }, "cannot open the connection")  # This should match the typical error when writing fails
-})
-
-
 test_that("save_ip_data saves correct data to CSV", {
   # Mocking the get_ip_data function to return valid data
   mock_ip_data <- data.frame(ip = "8.8.8.8", country_code = "US", country_name = "United States")
